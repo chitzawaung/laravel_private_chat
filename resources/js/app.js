@@ -8,9 +8,16 @@ import Vue from 'vue';
 import Vuex from 'vuex'
 import storeVuex from './store/index.js'
 import filter from './filter.js'
+import BootstrapVue from 'bootstrap-vue'
+
+Vue.use(BootstrapVue)
+// import vueChatScroll from 'vue-chat-scroll';
+// Vue.use(vueChatScroll)
 
 Vue.use(Vuex);
 const store = new Vuex.Store(storeVuex)
+
+
 
 window.moment = require('moment');
 

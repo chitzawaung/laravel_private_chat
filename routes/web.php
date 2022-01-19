@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MessageController;
+use Symfony\Component\Mime\MessageConverter;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,5 +27,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('userList', [MessageController::class, 'user_list'])->name('user.list');
 Route::get('usermessage/{id}', [MessageController::class, 'user_message'])->name('user.message');
-
+Route::post('senemessage', [MessageController::class, 'send_message'])->name('user.message.send');
+Route::get('/deletesinglemessage/{id}', [MessageController::class, 'delete_single_message'])->name('user.message.single.delete');
+Route::get('/deleteallmessage/{id}', [MessageController::class, 'delete_all_message'])->name('user.message.all.delete');
 

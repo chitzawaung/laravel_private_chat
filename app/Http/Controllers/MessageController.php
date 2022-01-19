@@ -34,13 +34,16 @@ class MessageController extends Controller
         // $message = Message::where('to', $id)->get();
 
         $user= User::findOrFail($id);
-        $messages = Message::where(function($q) use($id) {
-            $q->where('from', auth()->user()->id);
-            $q->where('to', $id);
-        })->orwhere(function($q) use($id) {
-            $q->where('from', $id);
-            $q->where('to', auth()->user()->id);
-        })->with('user')->get();
+        $messages = $this->user_message_by_id($id);
+        // $messages = Message::where(function($q) use($id) {
+        //     $q->where('from', auth()->user()->id);
+        //     $q->where('to', $id);
+        //     $q->where('type', 0);
+        // })->orwhere(function($q) use($id) {
+        //     $q->where('from', $id);
+        //     $q->where('to', auth()->user()->id);
+        //     $q->where('type', 1);
+        // })->with('user')->get();
 
         // return response()->json($messages, 200);
         return response()->json([
@@ -48,79 +51,57 @@ class MessageController extends Controller
             'user' => $user
         ]);
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+
+    public function send_message(Request $request){
+        if(!$request->ajax()){
+            abort(404);
+        }
+       $messages = Message::create([
+           'message'=>$request->message,
+           'from'=>auth()->user()->id,
+           'to'=>$request->user_id,
+           'type'=>0
+       ]);
+    //    $messages = Message::create([
+    //     'message'=>$request->message,
+    //     'from'=>auth()->user()->id,
+    //     'to'=>$request->user_id,
+    //     'type'=>1
+    // ]);
+
+        return response()->json($messages, 201);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function delete_single_message($id=null) {
+        // if(\Request::ajax()){
+        //     return abort(404);
+        // }
+        Message::findOrFail($id)->delete();
+        return response()->json('deleted', 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreMessageRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreMessageRequest $request)
-    {
-        //
+    public function delete_all_message($id=null){
+       $messages = $this->user_message_by_id($id);
+
+       foreach($messages as $msg) {
+           Message::findOrFail($msg->id)->delete();
+       }
+
+       return response()->json('all deleted message', 200);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Message $message)
-    {
-        //
+    public function user_message_by_id($id) {
+        $messages = Message::where(function($q) use($id) {
+            $q->where('from', auth()->user()->id);
+            $q->where('to', $id);
+            // $q->where('type', 0);
+        })->orwhere(function($q) use($id) {
+            $q->where('from', $id);
+            $q->where('to', auth()->user()->id);
+            // $q->where('type', 1);
+        })->with('user')->get();
+
+        return $messages;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Message $message)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateMessageRequest  $request
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateMessageRequest $request, Message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Message  $message
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Message $message)
-    {
-        //
-    }
 }

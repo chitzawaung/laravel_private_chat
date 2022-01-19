@@ -11313,7 +11313,7 @@ textarea.form-control-lg {
 }
 .people-list ul {
   padding: 20px;
-  height: 770px;
+  height: 300px;
 }
 .people-list ul li {
   padding-bottom: 20px;
@@ -11371,7 +11371,7 @@ textarea.form-control-lg {
   padding: 30px 30px 20px;
   border-bottom: 2px solid white;
   overflow-y: scroll;
-  height: 575px;
+  height: 500px;
 }
 .chat .chat-history .message-data {
   margin-bottom: 15px;
